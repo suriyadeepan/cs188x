@@ -89,3 +89,6 @@ ENV/
 
 # swap file
 .*swp
+
+# doc
+doc/
