@@ -80,21 +80,17 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
-def depthFirstSearch(problem):
-    # route
-    route = []
-
+def graph_search(problem, routes):
     # start state
     state = problem.getStartState()
 
     # never come back to state again
     closed_set = set()
-
-    routes = util.Stack()
+    
+    # current route
     route  = ()
 
     while not problem.isGoalState(state):
-    #for i in range(100):
         # find neighbours not in closed_set
         nodes = problem.getSuccessors(state)
 
@@ -110,25 +106,22 @@ def depthFirstSearch(problem):
         route = routes.pop()
 
         if route[-1][1] not in closed_set:
-
             # get state
             state = route[-1][1]
-
             # add to closed set
             closed_set.add(state)
 
-
-    for item in route:
-        print('{}->'.format(item[1]),end='')
-    print('')
+    #for item in route:
+    #    print('{}->'.format(item[1]),end='')
+    #print('')
 
     return [ item[0] for item in route ]
-    #return [s,s,w,s,w,w,s,w]
+
+def depthFirstSearch(problem):
+    return graph_search(problem, util.Stack())
 
 def breadthFirstSearch(problem):
-    """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    return graph_search(problem, util.Queue())
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
