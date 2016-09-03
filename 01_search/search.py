@@ -86,6 +86,7 @@ def graph_search(problem, routes):
 
     # never come back to state again
     closed_set = set()
+    closed_set.add(state)
     
     # current route
     route  = ()
@@ -117,6 +118,43 @@ def graph_search(problem, routes):
 
     return [ item[0] for item in route ]
 
+def graph_search_ucs(problem, routes):
+    # start state
+    state = problem.getStartState()
+
+    # never come back to state again
+    closed_set = set()
+    # add initial state to closed set
+    closed_set.add(state)
+    
+    # current route
+    route  = ()
+
+    while not problem.isGoalState(state):
+        # find neighbours not in closed_set
+        nodes = problem.getSuccessors(state)
+
+        # construct paths from from nodes
+        for node_ in nodes:
+            node, direc, cost = node_
+            path = route + ( (direc,node), )
+            if node not in closed_set:
+                # put all the paths in the stack
+                routes.push(path, cost)
+
+        # pop up a route
+        route = routes.pop()
+
+        if route[-1][1] not in closed_set:
+            # get state
+            state = route[-1][1]
+            # add to closed set
+            closed_set.add(state)
+
+    return [ item[0] for item in route ]
+
+
+
 def depthFirstSearch(problem):
     return graph_search(problem, util.Stack())
 
@@ -124,9 +162,7 @@ def breadthFirstSearch(problem):
     return graph_search(problem, util.Queue())
 
 def uniformCostSearch(problem):
-    """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    return graph_search_ucs(problem, util.PriorityQueue())
 
 def nullHeuristic(state, problem=None):
     """
